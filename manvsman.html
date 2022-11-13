@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="dodgem">          <!--Chỉ thị ng-app cho AngularJS biết rằng đây là phần tử gốc của ứng dụng AngularJS.-->
+<head>
+    <link href="./css/app.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Dodgem game by Nhom 4 - CNTT2 - K60</title>
+</head>
+<body ng-controller="MainController">   <!--Lệnh ng-controller thêm một bộ điều khiển vào ứng dụng của bạn.-->
+    <div class="start-panel" ng-hide="gameStarted"> <!--Chỉ thị ng-hide ẩn phần tử HTML nếu biểu thức đánh giá là true.-->
+      <p>
+        Bàn cờ được thiết lập với n-1 quân cờ màu xanh dọc theo cạnh trái và n-1 quân cờ màu đỏ dọc theo cạnh dưới, hình vuông dưới cùng bên trái còn lại trống. Lượt luân phiên: Lượt của người chơi 1 ("Trái") là di chuyển bất kỳ một quân cờ màu xanh nào về phía trước (phải) hoặc sang ngang (lên hoặc xuống) một ô trống. Lượt của Người chơi 2 ("Phải") là di chuyển bất kỳ một quân cờ màu đỏ nào về phía trước (lên) hoặc sang một bên (trái hoặc phải) một ô trống.<br/><br/>
+        Quân cờ không được di chuyển vào những chỗ đã có quân khác. Quân cờ chỉ có thể rời khỏi bàn cờ bằng cách tiến lên. Một quân cờ rời khỏi bàn cờ sẽ được lấy bởi người chơi. Người chơi phải luôn để cho đối thủ của mình đi được một nước đi đúng luật, nếu không sẽ thua.<br/><br/>
+        Người chiến thắng là người chơi đầu tiên lấy được tất cả quân cờ của mình hoặc bị đối thủ chặn tất cả các quân cờ của mình.
+      </p>
+      <p>-- Tham khảo từ Wikipedia --</p>
+      <div>
+        <p>Bạn có muốn đi trước không?</p>
+        <button ng-click="initGame(true)">Yes</button>         <!--Lệnh ng-click cho AngularJS biết phải làm gì khi một phần tử HTML được nhấp.-->
+        <button ng-click="initGame(false)">No</button>
+      </div>
+    </div>
+    <div class="game-wrapper" ng-show="gameStarted">           <!--Lệnh ng-show hiển thị phần tử HTML được chỉ định nếu biểu thức đánh giá là true, nếu không phần tử HTML bị ẩn.-->
+      <div>
+        <div class="info-panel">
+          <p class="turn-info" ng-hide="!gameProperties.thisMatch.playerLeft || !gameProperties.thisMatch.comLeft">{{lastMoved ? 'Player 2' : 'Player 1'}} đánh</p>
+          <p><b>Tổng Quan:</b></p>
+          <div>
+            <p>Số trận đã chơi: {{gameProperties.played}}</p>
+            <p>Player 1 thắng: {{gameProperties.playerWin}} - Player 2 thắng: {{gameProperties.played - gameProperties.playerWin}}</p>
+          </div>
+          <p><b>Trận này:</b></p>
+          <div>
+            <p>Player 1 đã di chuyển: {{gameProperties.thisMatch.playerMoved}} - Player 2 đã di chuyển: {{gameProperties.thisMatch.comMoved}}</p>
+            <p>Số quân cờ còn lại của Player 1 : {{gameProperties.thisMatch.playerLeft}}</p>
+            <p>Số quân cờ còn lại của Player 2 : {{gameProperties.thisMatch.comLeft}}</p>
+            <br/>
+            
+          </div>
+        </div>
+        <div class="{{congratulationMessage === '' ? '':'gameEnded'}}">
+          <p class="turn-info" ng-show="!gameProperties.thisMatch.playerLeft || !gameProperties.thisMatch.comLeft">{{congratulationMessage}}</p>
+          <div ng-repeat="r in gameProperties.thisMatch.map">
+            <div ng-repeat="c in r" ng-click="setSelectedChessPiece(c, $parent.$index, $index)" ng-switch="c.selected" class="{{c.active != '' ? 'active':''}} {{c.active}} {{c.selected ? 'selected' : ''}}">
+                <!--Lệnh ng-switch cho phép bạn ẩn / hiện các phần tử HTML tùy thuộc vào một biểu thức.
+                    Các phần tử con với chỉ thị ng-switch-when sẽ được hiển thị nếu nó khớp, nếu không, phần tử và các phần tử con của nó sẽ bị xóa.
+                    Bạn cũng có thể xác định một phần mặc định, bằng cách sử dụng lệnh ng-switch-default, để hiển thị một phần nếu không có phần nào khác khớp.-->
+              <div ng-switch-when="true">
+                <div class="top" ng-click="move('top')" data-val="{{$parent.$index}}" ng-show="gameProperties.thisMatch.directionCanMove.top"></div>
+                <div class="left" ng-click="move('left')" ng-show="gameProperties.thisMatch.directionCanMove.left"></div>
+                <div class="right" ng-click="move('right')" ng-show="gameProperties.thisMatch.directionCanMove.right"></div>
+                <div class="bottom" ng-click="move('bottom')" ng-show="gameProperties.thisMatch.directionCanMove.bottom"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/angular.min.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>

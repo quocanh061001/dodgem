@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="css/app.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Dodgem game</title>
+  </head>
+  <body ng-app="dodgem" ng-controller="MainController">
+    <div class="start-panel" ng-hide="gameStarted">    
+      <div>
+        <p>Bạn có muốn đi trước ?</p>
+        <button ng-click="initGame(true)">Có</button>
+        <button ng-click="initGame(false)">Không</button>
+      </div>
+    </div>
+    <div class="game-wrapper" ng-show="gameStarted">
+      <div>
+        <div class="info-panel">
+          <p class="turn-info">Lượt của bạn</p>
+          <p><b>This match:</b></p>
+          <div>
+            <p>Tổng quan nước đi của bạn:</p>
+            <table class="match-overview">
+              <tr ng-repeat="r in gameProperties.thisMatch.overview.player">
+                <td ng-repeat="c in r" class="{{gameProperties.thisMatch.map[$parent.$index][$index].active === 'player' ? 'active' : ''}}">{{c.score}}</td>
+              </tr>
+            </table>
+            <br/>
+            <p>Tổng quan nước đi của máy:</p>
+            <table class="match-overview com">
+              <tr ng-repeat="r in gameProperties.thisMatch.overview.com">
+                <td ng-repeat="c in r" class="{{gameProperties.thisMatch.map[$parent.$index][$index].active === 'com' ? 'active' : ''}}">{{c.score}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="{{congratulationMessage === '' ? '':'gameEnded'}}">
+          <p class="turn-info" ng-show="!gameProperties.thisMatch.playerLeft || !gameProperties.thisMatch.comLeft">{{congratulationMessage}}</p>
+          <div ng-repeat="r in gameProperties.thisMatch.map">
+            <div ng-repeat="c in r" ng-click="setSelectedChessPiece(c, $parent.$index, $index)" ng-switch="c.selected" class="{{c.active != '' ? 'active':''}} {{c.active}} {{c.selected ? 'selected' : ''}}">
+              <div ng-switch-when="true">
+                <div class="top" ng-click="move('top')" ng-show="gameProperties.thisMatch.directionCanMove.top"></div>
+                <div class="left" ng-click="move('left')" ng-show="gameProperties.thisMatch.directionCanMove.left"></div>
+                <div class="right" ng-click="move('right')" ng-show="gameProperties.thisMatch.directionCanMove.right"></div>
+                <div class="bottom" ng-click="move('bottom')" ng-show="gameProperties.thisMatch.directionCanMove.bottom"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <!-- <script src="js/app.js"></script> -->
+    <script src="js/main.js"></script>
+  </body>
+</html>
